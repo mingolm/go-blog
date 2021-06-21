@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 )
 
 func main() {
@@ -23,7 +22,6 @@ func main() {
 		signal.Notify(signalCh, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGTERM)
 		s := <-signalCh
 		logger.Infof("signal received: %v", s)
-		time.Sleep(time.Second)
 		cancel()
 	}(cancel)
 

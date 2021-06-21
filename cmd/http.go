@@ -12,7 +12,7 @@ import (
 )
 
 func runHttp(ctx context.Context) {
-	svc, afterCloseFns := httpServer()
+	svc, shutdownCallback := httpServer()
 	listener, err := net.Listen("tcp", svc.Addr)
 	if err != nil {
 		logger.Fatalw("could not listen on port",
@@ -37,39 +37,45 @@ func runHttp(ctx context.Context) {
 
 	// 平滑退出
 	<-ctx.Done()
-	if err := svc.Shutdown(ctx); err != nil {
+
+	// 缓冲时间
+	time.Sleep(time.Second)
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	if err := svc.Shutdown(shutdownCtx); err != nil {
 		if err != http.ErrServerClosed {
-			logger.Errorw("http server close fail,",
+			logger.Errorw("http server close failed",
 				"err", err,
 			)
 		}
 	}
-	for _, fn := range afterCloseFns {
-		fn()
-	}
+	cancel()
+
+	shutdownCallback()
 
 	logger.Info("bye!")
 }
 
-func httpServer() (h *http.Server, afterCLoseFns []func()) {
-	afterCLoseFns = append(afterCLoseFns, func() {
-		fmt.Println("close")
-	})
-
+func httpServer() (h *http.Server, shutdownCallback func()) {
 	svcRouter := router.New()
 	routers := svcRouter.Register(&app.Login{
 
 	}).HTTPRouters()
 
+	shutdownCallback = func() {
+		fmt.Println("shutdown")
+	}
+
 	return &http.Server{
 		Addr: defaultConfigs.httpListen,
 		Handler: http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 			// 健康检查
-			if request.URL.Path == "/healthz" {
+			if request.URL.Path == "/health" {
 				writer.WriteHeader(http.StatusOK)
 				_, _ = writer.Write([]byte("ok"))
 				return
 			}
+
 			ml := middleware.New()
 			ml.Add(middleware.CsrfToken())
 			ml.Handle(routers.HTTPHandler()).ServeHTTP(writer, request)
@@ -77,5 +83,5 @@ func httpServer() (h *http.Server, afterCLoseFns []func()) {
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
 		IdleTimeout:  5 * time.Second,
-	}, afterCLoseFns
+	}, shutdownCallback
 }

@@ -25,10 +25,7 @@ func (h *Handler) HTTPHandler() http.HandlerFunc {
 			default:
 				httpStatusCode = http.StatusInternalServerError
 			}
-			resp = &response.Response{
-				Message: err.Error(),
-				Success: false,
-			}
+			resp = response.Error(err)
 		} else {
 			httpStatusCode = http.StatusOK
 		}
@@ -41,14 +38,14 @@ func (h *Handler) HTTPHandler() http.HandlerFunc {
 
 		w.WriteHeader(httpStatusCode)
 		for key := range resp.Headers() {
-			w.Header().Set(key, resp.Header.Get(key))
+			w.Header().Set(key, resp.GetHeader(key))
 		}
 		_, _ = w.Write(bs)
 		_ = r.Body.Close()
 	}
 }
 
-func (h *Handler) handle(r *http.Request) (resp *response.Response, err error) {
+func (h *Handler) handle(r *http.Request) (resp response.Response, err error) {
 	router, ok := h.routerSet[fmt.Sprintf("%s#%s", r.URL.Path, r.Method)]
 	if !ok {
 		if _, methodNotAllowed := h.routerMethodSet[r.URL.Path]; methodNotAllowed {

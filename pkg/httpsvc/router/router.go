@@ -39,7 +39,7 @@ func (r *RI) HTTPRouters() *Handler {
 type Router struct {
 	Path    string
 	Method  string
-	Handler func(req *http.Request) (resp *response.Response, err error)
+	Handler func(req *http.Request) (resp response.Response, err error)
 }
 
 type Routers []Router

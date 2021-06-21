@@ -19,9 +19,6 @@ func (s *Login) Routers() router.Routers {
 	}
 }
 
-func (s *Login) Login(req *http.Request) (resp *response.Response, err error) {
-	return &response.Response{
-		Message: "ok",
-		Success: true,
-	}, nil
+func (s *Login) Login(req *http.Request) (resp response.Response, err error) {
+	return response.Html("index", "123"), nil
 }

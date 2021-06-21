@@ -1,37 +1,45 @@
 package response
 
-import (
-	"encoding/json"
-	"net/http"
-)
+type Response interface {
+	Headers() (headers map[string]string)
+	AddHeader(key, value string)
+	GetHeader(key string) (value string)
+	Bytes() (bs []byte, err error)
+}
 
 var ErrInternalBytes []byte
+var Success Response
 
 func init() {
-	ErrInternalBytes, _ = json.Marshal(&Response{
-		Message: "",
-		Success: false,
-	})
-}
-
-type Response struct {
-	Message string      `json:"message"`
-	Header  http.Header `json:"-"`
-	Success bool        `json:"success"`
-}
-
-func (r *Response) SetHeader(key, value string) {
-	r.Header.Set(key, value)
-}
-
-func (r *Response) Headers() http.Header {
-	return r.Header
-}
-
-func (r *Response) Bytes() (bs []byte, err error) {
-	bs, err = json.Marshal(r)
-	if err != nil {
-		return nil, err
+	ErrInternalBytes, _ = (&httpResponse{
+		Data: "",
+	}).Bytes()
+	Success = &httpResponse{
+		Data: "ok",
 	}
-	return bs, nil
+}
+
+func Data(v interface{}) Response {
+	return &httpResponse{
+		Data:    v,
+		Success: true,
+	}
+}
+
+func Html(filename string, v interface{}) Response {
+	return &htmlResponse{
+		Filename: filename,
+		Data:     v,
+	}
+}
+
+func Error(err error) Response {
+	return &httpResponse{
+		Data:    err.Error(),
+		Success: false,
+	}
+}
+
+type Common struct {
+	Message string `json:"message"`
 }
