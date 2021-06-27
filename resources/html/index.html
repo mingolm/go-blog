@@ -2,9 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>登录</title>
 </head>
+<style type='text/css'>
+    #login {
+        text-align: center;
+        background-color: #fff;
+        border-radius: 20px;
+        width: 300px;
+        height: 350px;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+    .line-box {
+        margin: 10px 0;
+    }
+</style>
 <body>
-{{.}}
+    <div id='login'>
+        <h3 id='login-text'>后台登录</h3>
+        <form action="login" method="post">
+        <div>
+            <div class='line-box'>
+                <label for='username'>
+                    账户：
+                    <input id='username' name='username' placeholder='账户名' />
+                </label>
+            </div>
+            <div class='line-box'>
+                <label for='password'>
+                    密码：
+                    <input id='password' name='password' placeholder='密码' />
+                </label>
+            </div>
+            <div class='line-box'>
+                <input type='submit' name='登录' />
+            </div>
+        </div>
+        </form>
+    </div>
 </body>
 </html>

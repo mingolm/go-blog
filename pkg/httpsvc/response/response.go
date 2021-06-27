@@ -33,6 +33,13 @@ func Html(filename string, v interface{}) Response {
 	}
 }
 
+func Redirect(url string, code int) Response {
+	return &redirectResponse{
+		Url:  url,
+		Code: code,
+	}
+}
+
 func Error(err error) Response {
 	return &httpResponse{
 		Data:    err.Error(),

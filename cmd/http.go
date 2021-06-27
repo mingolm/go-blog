@@ -58,9 +58,9 @@ func runHttp(ctx context.Context) {
 
 func httpServer() (h *http.Server, shutdownCallback func()) {
 	svcRouter := router.New()
-	routers := svcRouter.Register(&app.Login{
-
-	}).HTTPRouters()
+	routers := svcRouter.RegisterMiddleware(
+		middleware.ReteLimit,
+	).Register(&app.Login{}).HTTPRouters()
 
 	shutdownCallback = func() {
 		fmt.Println("shutdown")
@@ -75,10 +75,11 @@ func httpServer() (h *http.Server, shutdownCallback func()) {
 				_, _ = writer.Write([]byte("ok"))
 				return
 			}
-
-			ml := middleware.New()
-			ml.Add(middleware.CsrfToken())
-			ml.Handle(routers.HTTPHandler()).ServeHTTP(writer, request)
+			routers.HTTPHandler().ServeHTTP(writer, request)
+			//ml := middleware.New()
+			//ml.Add(middleware.CsrfToken())
+			//ml.Add(middleware.Authentication())
+			//ml.Handle().ServeHTTP(writer, request)
 		}),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,

@@ -2,14 +2,16 @@ package router
 
 import (
 	"fmt"
+	"github.com/mingolm/go-recharge/pkg/httpsvc/middleware"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/response"
 	"github.com/mingolm/go-recharge/utils/errutil"
 	"net/http"
 )
 
 type Handler struct {
-	routerSet       map[string]*Router
-	routerMethodSet map[string]struct{}
+	routerMiddlewaresSet map[string][]middleware.Middleware
+	routerSet            map[string]Router
+	routerMethodSet      map[string]struct{}
 }
 
 func (h *Handler) HTTPHandler() http.HandlerFunc {
@@ -30,6 +32,15 @@ func (h *Handler) HTTPHandler() http.HandlerFunc {
 			httpStatusCode = http.StatusOK
 		}
 
+		w.Header().Set("Cache-Control", "no-cache, private")
+		if redirectResponse, ok := resp.(interface {
+			Redirect() (url string, code int)
+		}); ok {
+			url, code := redirectResponse.Redirect()
+			http.Redirect(w, r, url, code)
+			return
+		}
+
 		bs, err := resp.Bytes()
 		if err != nil {
 			httpStatusCode = http.StatusInternalServerError
@@ -46,12 +57,20 @@ func (h *Handler) HTTPHandler() http.HandlerFunc {
 }
 
 func (h *Handler) handle(r *http.Request) (resp response.Response, err error) {
-	router, ok := h.routerSet[fmt.Sprintf("%s#%s", r.URL.Path, r.Method)]
+	routerIndex := fmt.Sprintf("%s#%s", r.URL.Path, r.Method)
+	router, ok := h.routerSet[routerIndex]
 	if !ok {
 		if _, methodNotAllowed := h.routerMethodSet[r.URL.Path]; methodNotAllowed {
 			return nil, errutil.ErrMethodNotAllowed
 		}
 		return nil, errutil.ErrPageNotFound
 	}
-	return router.Handler(r)
+	hl := router.Handler
+	if middlewares, ok := h.routerMiddlewaresSet[routerIndex]; ok {
+		for i := range middlewares {
+			hl = middlewares[len(middlewares)-i-1](hl)
+		}
+	}
+
+	return hl(r)
 }
