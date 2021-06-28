@@ -2,13 +2,21 @@ package app
 
 import (
 	"fmt"
+	"github.com/mingolm/go-recharge/pkg/core"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/middleware"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/response"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/router"
 	"net/http"
 )
 
+func NewLogin() *Login {
+	return &Login{
+		core.Instance(),
+	}
+}
+
 type Login struct {
+	*core.Service
 }
 
 func (s *Login) Routers() router.Routers {
@@ -43,5 +51,15 @@ func (s *Login) Login(req *http.Request) (resp response.Response, err error) {
 	if username == "" || password == "" {
 		return response.Error(fmt.Errorf("login: username or password is empty")), nil
 	}
+
+	userRow, err := s.UserRepo.GetForLogin(req.Context(), username, password)
+	if err != nil {
+		return nil, err
+	}
+
+	s.Logger.Infow("login success",
+		"id", userRow.ID,
+	)
+
 	return response.Redirect("index", 302), nil
 }

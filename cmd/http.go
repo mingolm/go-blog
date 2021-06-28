@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/mingolm/go-recharge/configs"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/middleware"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/router"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/router/app"
@@ -60,14 +61,14 @@ func httpServer() (h *http.Server, shutdownCallback func()) {
 	svcRouter := router.New()
 	routers := svcRouter.RegisterMiddleware(
 		middleware.ReteLimit,
-	).Register(&app.Login{}).HTTPRouters()
+	).Register(app.NewLogin()).HTTPRouters()
 
 	shutdownCallback = func() {
 		fmt.Println("shutdown")
 	}
 
 	return &http.Server{
-		Addr: defaultConfigs.httpListen,
+		Addr: configs.DefaultConfigs.HttpListen,
 		Handler: http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 			// 健康检查
 			if request.URL.Path == "/health" {
@@ -76,10 +77,6 @@ func httpServer() (h *http.Server, shutdownCallback func()) {
 				return
 			}
 			routers.HTTPHandler().ServeHTTP(writer, request)
-			//ml := middleware.New()
-			//ml.Add(middleware.CsrfToken())
-			//ml.Add(middleware.Authentication())
-			//ml.Handle().ServeHTTP(writer, request)
 		}),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,

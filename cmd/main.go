@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/mingolm/go-recharge/configs"
 	"github.com/mingolm/go-recharge/utils/argutil"
 	"os"
 	"os/signal"
@@ -10,7 +11,7 @@ import (
 
 func main() {
 	// 配置初始化
-	argutil.Parse(&defaultConfigs)
+	argutil.Parse(&configs.DefaultConfigs)
 
 	// 日志初始化
 	initLogger()
@@ -25,13 +26,13 @@ func main() {
 		cancel()
 	}(cancel)
 
-	switch defaultConfigs.run {
+	switch configs.DefaultConfigs.Run {
 	case "http":
 		runHttp(ctx)
 	case "tmpjob":
 	default:
 		logger.Fatalw("unknown run flag",
-			"value", defaultConfigs.run,
+			"value", configs.DefaultConfigs.Run,
 		)
 	}
 	os.Exit(0)

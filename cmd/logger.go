@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/mingolm/go-recharge/configs"
 	"go.uber.org/zap"
 )
 
@@ -9,7 +10,7 @@ var logger *zap.SugaredLogger
 
 func initLogger() {
 	var options []zap.Option
-	if defaultConfigs.mode == "prod" {
+	if configs.DefaultConfigs.Mode == "prod" {
 		rawLogger, _ = zap.NewProduction(options...)
 	} else {
 		rawLogger, _ = zap.NewDevelopment(options...)
