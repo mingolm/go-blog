@@ -8,7 +8,8 @@ import (
 )
 
 type Service struct {
-	UserRepo repo.User
+	UserRepo  repo.User
+	OrderRepo repo.Order
 
 	Logger *zap.SugaredLogger
 }
@@ -20,6 +21,9 @@ func Instance() *Service {
 	serviceOnce.Do(func() {
 		service = &Service{
 			UserRepo: repo.NewUserRepo(&repo.UserConfig{
+				DB: mustNewGormDB(configs.DefaultConfigs.DatabaseDsn),
+			}),
+			OrderRepo: repo.NewOrderRepo(&repo.OrderConfig{
 				DB: mustNewGormDB(configs.DefaultConfigs.DatabaseDsn),
 			}),
 			Logger: zap.S(),

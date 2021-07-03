@@ -49,7 +49,7 @@ func (s *Login) Middlewares() []middleware.Middleware {
 }
 
 func (s *Login) LoginTemplate(req *http.Request) (resp response.Response, err error) {
-	return response.Html("login"), nil
+	return response.Html("login", nil), nil
 }
 
 func (s *Login) Login(req *http.Request) (resp response.Response, err error) {

@@ -23,7 +23,7 @@ var (
 
 type htmlResponse struct {
 	Filename string
-	Data     []interface{} `json:"data"`
+	Data     interface{}
 	Cookies  []*http.Cookie
 }
 

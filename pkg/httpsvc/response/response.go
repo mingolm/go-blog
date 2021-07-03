@@ -30,7 +30,7 @@ func Data(v interface{}) Response {
 	}
 }
 
-func Html(filename string, v ...interface{}) Response {
+func Html(filename string, v interface{}) Response {
 	return &htmlResponse{
 		Filename: filename,
 		Data:     v,
