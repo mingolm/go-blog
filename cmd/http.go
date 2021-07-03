@@ -60,8 +60,9 @@ func runHttp(ctx context.Context) {
 func httpServer() (h *http.Server, shutdownCallback func()) {
 	svcRouter := router.New()
 	routers := svcRouter.RegisterMiddleware(
+		middleware.Context,
 		middleware.ReteLimit,
-	).Register(app.NewLogin()).HTTPRouters()
+	).Register(app.NewLogin(), app.NewApp()).HTTPRouters()
 
 	shutdownCallback = func() {
 		fmt.Println("shutdown")

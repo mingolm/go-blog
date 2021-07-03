@@ -6,6 +6,7 @@ import (
 	"github.com/mingolm/go-recharge/utils/errutil"
 	"html/template"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path/filepath"
 	"sync"
@@ -22,7 +23,8 @@ var (
 
 type htmlResponse struct {
 	Filename string
-	Data     interface{} `json:"data"`
+	Data     []interface{} `json:"data"`
+	Cookies  []*http.Cookie
 }
 
 func (h *htmlResponse) Headers() (headers map[string]string) {
@@ -33,6 +35,13 @@ func (h *htmlResponse) AddHeader(key, value string) {
 }
 func (h *htmlResponse) GetHeader(key string) (value string) {
 	return
+}
+func (h *htmlResponse) WithCookie(cookie *http.Cookie) (ins Response) {
+	h.Cookies = append(h.Cookies, cookie)
+	return h
+}
+func (h *htmlResponse) GetCookie() (cookies []*http.Cookie) {
+	return h.Cookies
 }
 func (h *htmlResponse) Bytes() (bs []byte, err error) {
 	tmpl, err := h.getTemplate()

@@ -1,14 +1,21 @@
 package app
 
 import (
-	"fmt"
+	"github.com/mingolm/go-recharge/pkg/core"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/middleware"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/response"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/router"
 	"net/http"
 )
 
+func NewApp() *App {
+	return &App{
+		core.Instance(),
+	}
+}
+
 type App struct {
+	*core.Service
 }
 
 func (s *App) Routers() router.Routers {
@@ -22,7 +29,7 @@ func (s *App) Routers() router.Routers {
 }
 
 func (s *App) Middlewares() []middleware.Middleware {
-	return []middleware.Middleware{}
+	return []middleware.Middleware{middleware.Authentication}
 }
 
 type Order struct {
@@ -30,9 +37,5 @@ type Order struct {
 }
 
 func (s *App) index(req *http.Request) (resp response.Response, err error) {
-	orderID := req.FormValue("order_id")
-	fmt.Printf("orderID: %s \n", orderID)
-	return response.Data(&Order{
-		ID: orderID,
-	}), nil
+	return response.Html("index"), nil
 }

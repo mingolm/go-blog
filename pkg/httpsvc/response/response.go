@@ -1,9 +1,13 @@
 package response
 
+import "net/http"
+
 type Response interface {
 	Headers() (headers map[string]string)
 	AddHeader(key, value string)
 	GetHeader(key string) (value string)
+	WithCookie(cookie *http.Cookie) (ins Response)
+	GetCookie() (cookies []*http.Cookie)
 	Bytes() (bs []byte, err error)
 }
 
@@ -26,7 +30,7 @@ func Data(v interface{}) Response {
 	}
 }
 
-func Html(filename string, v interface{}) Response {
+func Html(filename string, v ...interface{}) Response {
 	return &htmlResponse{
 		Filename: filename,
 		Data:     v,
