@@ -2,9 +2,10 @@ package driver
 
 type Driver interface {
 	// 创建 h5 订单
-	CreateOrderForH5(sourceID, orderId, orderAmt string, busCode int32) (err error)
+	CreateOrderForH5(sourceID, orderId string, orderAmt float64, busCode int32) (err error)
 	// 创建扫码订单
-	CreateOrderForQRCode(sourceID, orderId, orderAmt string, busCode int32) (err error)
+	CreateOrderForQRCode(sourceID, orderId string, orderAmt float64, busCode int32) (err error)
+	// 取消订单
 	CancelOrder(sourceID, orderID string) (output *OrderCancelOutput, err error)
 	// 查询订单状态
 	GetOrderStatus(sourceID, orderID string) (output *OrderStatusOutput, err error)

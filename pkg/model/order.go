@@ -6,10 +6,14 @@ const (
 	orderTableName = "orders"
 )
 
+type OrderType int
 type BusCode int
 type OrderStatus int
 
 const (
+	OrderTypeH5     OrderType = 0
+	OrderTypeQRCode OrderType = 1
+
 	BusCodeZFB BusCode = 0
 	BusCodeWX  BusCode = 1
 	BusCodeYSF BusCode = 2
@@ -21,9 +25,10 @@ const (
 
 type Order struct {
 	ID        uint64      `gorm:"column:id" json:"id"`
+	Type      OrderType   `gorm:"type" json:"type"`
 	SourceID  string      `gorm:"column:source_id" json:"source_id"`
 	OrderID   string      `gorm:"column:order_id" json:"order_id"`
-	OrderAmt  uint64      `gorm:"column:order_amt" json:"order_amt"`
+	OrderAmt  float64     `gorm:"column:order_amt" json:"order_amt"`
 	BusCode   BusCode     `gorm:"column:bus_code" json:"bus_code"`
 	Status    OrderStatus `gorm:"column:status" json:"status"`
 	IP        IPv4        `gorm:"column:ip" json:"ip"`

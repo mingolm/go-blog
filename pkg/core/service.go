@@ -2,6 +2,7 @@ package core
 
 import (
 	"github.com/mingolm/go-recharge/configs"
+	"github.com/mingolm/go-recharge/pkg/core/driver"
 	"github.com/mingolm/go-recharge/pkg/repo"
 	"go.uber.org/zap"
 	"sync"
@@ -10,6 +11,8 @@ import (
 type Service struct {
 	UserRepo  repo.User
 	OrderRepo repo.Order
+
+	ThirdDriver driver.Driver
 
 	Logger *zap.SugaredLogger
 }
@@ -26,7 +29,8 @@ func Instance() *Service {
 			OrderRepo: repo.NewOrderRepo(&repo.OrderConfig{
 				DB: mustNewGormDB(configs.DefaultConfigs.DatabaseDsn),
 			}),
-			Logger: zap.S(),
+			ThirdDriver: driver.NewThirdDriver(),
+			Logger:      zap.S(),
 		}
 	})
 	return service

@@ -33,6 +33,11 @@ func (s *App) Routers() router.Routers {
 			Handler: s.order,
 			Method:  "POST",
 		},
+		{
+			Path:    "/order-for-qrcode",
+			Handler: s.orderForQRCode,
+			Method:  "POST",
+		},
 	}
 }
 
@@ -52,9 +57,15 @@ func (s *App) index(req *http.Request) (resp response.Response, err error) {
 	}), nil
 }
 
+type CreateOrderOutput struct {
+	OrderID string `json:"order_id"`
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+}
+
 func (s *App) order(req *http.Request) (resp response.Response, err error) {
 	orderID := req.FormValue("order_id")
-	orderAmt, _ := strconv.ParseUint(req.FormValue("order_amt"), 10, 64)
+	orderAmt, _ := strconv.ParseFloat(req.FormValue("order_amt"), 10)
 	sourceID := req.FormValue("user_id")
 	busCodeInt, err := strconv.ParseInt(req.FormValue("bus_code"), 10, 64)
 	if err != nil {
@@ -63,6 +74,7 @@ func (s *App) order(req *http.Request) (resp response.Response, err error) {
 	busCode := model.BusCode(busCodeInt)
 
 	row := &model.Order{
+		Type:     model.OrderTypeH5,
 		SourceID: sourceID,
 		OrderID:  orderID,
 		OrderAmt: orderAmt,
@@ -74,5 +86,59 @@ func (s *App) order(req *http.Request) (resp response.Response, err error) {
 		return nil, err
 	}
 
-	return response.Html("index", nil), nil
+	// 创建四方订单
+	output := &CreateOrderOutput{
+		OrderID: orderID,
+		Success: true,
+	}
+	err = s.ThirdDriver.CreateOrderForH5(sourceID, orderID, orderAmt, int32(busCode))
+	if err != nil {
+		s.Logger.Errorw("create order for h5 failed",
+			"err", err,
+		)
+		output.Success = false
+		output.Message = err.Error()
+	}
+
+	return response.Data(output), nil
+}
+
+func (s *App) orderForQRCode(req *http.Request) (resp response.Response, err error) {
+	orderID := req.FormValue("order_id")
+	orderAmt, _ := strconv.ParseFloat(req.FormValue("order_amt"), 10)
+	sourceID := req.FormValue("user_id")
+	busCodeInt, err := strconv.ParseInt(req.FormValue("bus_code"), 10, 64)
+	if err != nil {
+		return nil, errutil.ErrInvalidArguments.Msg("bus_code")
+	}
+	busCode := model.BusCode(busCodeInt)
+
+	row := &model.Order{
+		Type:     model.OrderTypeQRCode,
+		SourceID: sourceID,
+		OrderID:  orderID,
+		OrderAmt: orderAmt,
+		BusCode:  busCode,
+		IP:       model.GetIPv4(req.Context().Value("ip").(string)),
+	}
+	// 创建内部订单
+	if err := s.OrderRepo.Create(req.Context(), row); err != nil {
+		return nil, err
+	}
+
+	// 创建四方订单
+	output := &CreateOrderOutput{
+		OrderID: orderID,
+		Success: true,
+	}
+	err = s.ThirdDriver.CreateOrderForQRCode(sourceID, orderID, orderAmt, int32(busCode))
+	if err != nil {
+		s.Logger.Errorw("create order for qrcode failed",
+			"err", err,
+		)
+		output.Success = false
+		output.Message = err.Error()
+	}
+
+	return response.Data(output), nil
 }
