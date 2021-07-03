@@ -3,11 +3,15 @@ package driver
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"github.com/mingolm/go-recharge/utils/errutil"
+	"reflect"
 	"strconv"
 )
 
-func NewThirdDriver(config *ThirdConfig) Driver {
-	return &thirdDriver{
+func NewThirdDriver(config *ThirdConfig) *ThirdDriver {
+	return &ThirdDriver{
 		config,
 	}
 }
@@ -18,14 +22,20 @@ type ThirdConfig struct {
 	BGUrl            string // 支付结果后台通知地址
 	H5RemoteAddr     string // h5支付接口地址
 	QRCodeRemoteAddr string // 二维码支付接口地址
+	CancelRemoteAddr string // 取消订单接口地址
+	StatusRemoteAddr string // 查询订单接口地址
 }
 
-type thirdDriver struct {
+type ThirdDriver struct {
 	*ThirdConfig
 }
 
-func (t *thirdDriver) CreateOrderForH5(sourceID, orderID string, orderAmt float64, busCode int32) (err error) {
-	sign := t.generateSign(sourceID, orderID, orderAmt, busCode)
+// 创建 h5 订单
+func (t *ThirdDriver) CreateOrderForH5(sourceID, orderID string, orderAmt float64, busCode int32) (err error) {
+	sign, err := t.generateSign(orderID, orderAmt, sourceID, busCode)
+	if err != nil {
+		return errutil.ErrInternal.Msg(err.Error())
+	}
 	_, err = dhc().Post(t.H5RemoteAddr, map[string]interface{}{
 		"ORDER_AMT": orderAmt,
 		"ORDER_ID":  orderID,
@@ -36,13 +46,17 @@ func (t *thirdDriver) CreateOrderForH5(sourceID, orderID string, orderAmt float6
 		"SIGN":      sign,
 	})
 	if err != nil {
-		return err
+		return errutil.ErrInternal.Msg(err.Error())
 	}
 	return nil
 }
 
-func (t *thirdDriver) CreateOrderForQRCode(sourceID, orderID string, orderAmt float64, busCode int32) (err error) {
-	sign := t.generateSign(sourceID, orderID, orderAmt, busCode)
+// 创建扫码订单
+func (t *ThirdDriver) CreateOrderForQRCode(sourceID, orderID string, orderAmt float64, busCode int32) (err error) {
+	sign, err := t.generateSign(orderID, orderAmt, sourceID, busCode)
+	if err != nil {
+		return errutil.ErrInternal.Msg(err.Error())
+	}
 	_, err = dhc().Post(t.H5RemoteAddr, map[string]interface{}{
 		"ORDER_AMT": orderAmt,
 		"ORDER_ID":  orderID,
@@ -53,26 +67,60 @@ func (t *thirdDriver) CreateOrderForQRCode(sourceID, orderID string, orderAmt fl
 		"SIGN":      sign,
 	})
 	if err != nil {
-		return err
+		return errutil.ErrInternal.Msg(err.Error())
 	}
 	return nil
 }
 
-func (t *thirdDriver) CancelOrder(sourceID, orderID string) (output *OrderCancelOutput, err error) {
+// 取消订单
+func (t *ThirdDriver) CancelOrder(sourceID, orderID string) (output *OrderCancelOutput, err error) {
 	return
 }
 
-func (t *thirdDriver) GetOrderStatus(sourceID, orderID string) (output *OrderStatusOutput, err error) {
-	return
+// 查询订单状态
+func (t *ThirdDriver) GetOrderStatus(sourceID, orderID string) (output *OrderStatusOutput, err error) {
+	sign, err := t.generateSign(orderID, sourceID)
+	if err != nil {
+		return nil, errutil.ErrInternal.Msg(err.Error())
+	}
+	bs, err := dhc().Post(t.StatusRemoteAddr, map[string]interface{}{
+		"ORDER_ID": orderID,
+		"USER_ID":  sourceID,
+		"SIGN":     sign,
+	})
+	if err != nil {
+		return nil, errutil.ErrInternal.Msg(err.Error())
+	}
+	output = &OrderStatusOutput{}
+	if err := json.Unmarshal(bs, output); err != nil {
+		return nil, errutil.ErrInternal.Msg(err.Error())
+	}
+	if !output.Success || output.Code != 200 {
+		return nil, errutil.ErrInternal.Msg(string(bs))
+	}
+
+	return output, nil
 }
 
-func (t *thirdDriver) generateSign(sourceID, orderId string, orderAmt float64, busCode int32) (sign string) {
+func (t *ThirdDriver) generateSign(values ...interface{}) (sign string, err error) {
 	// sign1
 	m := md5.New()
-	m.Write([]byte(orderId))
-	m.Write([]byte(strconv.FormatFloat(orderAmt, 'f', 2, 64)))
-	m.Write([]byte(sourceID))
-	m.Write([]byte(strconv.FormatInt(int64(busCode), 10)))
+	for _, value := range values {
+		switch v := value.(type) {
+		case string:
+			m.Write([]byte(v))
+		case []byte:
+			m.Write(v)
+		case float64:
+			m.Write([]byte(strconv.FormatFloat(v, 'f', 2, 64)))
+		case float32:
+			m.Write([]byte(strconv.FormatFloat(float64(v), 'f', 2, 64)))
+		case int64:
+			m.Write([]byte(strconv.FormatInt(v, 10)))
+		default:
+			return "", fmt.Errorf("unknown sign value type %s", reflect.TypeOf(value).String())
+		}
+	}
 	sign1 := m.Sum(nil)
 
 	// sign2
@@ -82,5 +130,5 @@ func (t *thirdDriver) generateSign(sourceID, orderId string, orderAmt float64, b
 	sign2 := m2.Sum(nil)
 
 	sign = hex.EncodeToString(sign2)
-	return sign[8:24]
+	return sign[8:24], nil
 }

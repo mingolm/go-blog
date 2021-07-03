@@ -12,7 +12,11 @@ func TestGenerateSign(t *testing.T) {
 		BGUrl:            configs.DefaultConfigs.PAYBGUrl,
 		H5RemoteAddr:     configs.DefaultConfigs.PAYH5RemoteAddr,
 		QRCodeRemoteAddr: configs.DefaultConfigs.PAYQRCodeRemoteAddr,
-	}).(*thirdDriver)
-	sign := td.generateSign("shop888", "20180912154311shop201809131545", 100.00, 3201)
+	})
+	sign, err := td.generateSign("20180912154311shop201809131545", 100.00, "shop888", 3201)
+	if err != nil {
+		t.Error(err.Error())
+		return
+	}
 	t.Log(sign)
 }

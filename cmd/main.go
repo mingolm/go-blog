@@ -30,6 +30,7 @@ func main() {
 	case "http":
 		runHttp(ctx)
 	case "tmpjob":
+		runJob(ctx, newOrderQueryJob())
 	default:
 		logger.Fatalw("unknown run flag",
 			"value", configs.DefaultConfigs.Run,
