@@ -13,10 +13,8 @@ func TestGenerateSign(t *testing.T) {
 		H5RemoteAddr:     configs.DefaultConfigs.PAYH5RemoteAddr,
 		QRCodeRemoteAddr: configs.DefaultConfigs.PAYQRCodeRemoteAddr,
 	})
-	sign, err := td.generateSign("20180912154311shop201809131545", 100.00, "shop888", 3201)
+	_, err := td.generateSign("20180912154311shop201809131545", 100.00, "shop888", 3201)
 	if err != nil {
-		t.Error(err.Error())
-		return
+		t.Fatal(err.Error())
 	}
-	t.Log(sign)
 }

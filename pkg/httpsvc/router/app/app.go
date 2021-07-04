@@ -91,7 +91,7 @@ func (s *App) order(req *http.Request) (resp response.Response, err error) {
 		OrderID: orderID,
 		Success: true,
 	}
-	err = s.ThirdDriver.CreateOrderForH5(sourceID, orderID, orderAmt, int32(busCode))
+	err = s.ThirdDriver.CreateOrderForH5(orderID, orderAmt, sourceID, int32(busCode))
 	if err != nil {
 		s.Logger.Errorw("create order for h5 failed",
 			"err", err,
@@ -131,7 +131,7 @@ func (s *App) orderForQRCode(req *http.Request) (resp response.Response, err err
 		OrderID: orderID,
 		Success: true,
 	}
-	err = s.ThirdDriver.CreateOrderForQRCode(sourceID, orderID, orderAmt, int32(busCode))
+	err = s.ThirdDriver.CreateOrderForQRCode(orderID, orderAmt, sourceID, int32(busCode))
 	if err != nil {
 		s.Logger.Errorw("create order for qrcode failed",
 			"err", err,

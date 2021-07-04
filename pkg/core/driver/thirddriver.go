@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/mingolm/go-recharge/pkg/httpclient"
 	"github.com/mingolm/go-recharge/utils/errutil"
 	"reflect"
 	"strconv"
@@ -31,16 +32,16 @@ type ThirdDriver struct {
 }
 
 // 创建 h5 订单
-func (t *ThirdDriver) CreateOrderForH5(sourceID, orderID string, orderAmt float64, busCode int32) (err error) {
+func (t *ThirdDriver) CreateOrderForH5(orderID string, orderAmt float64, sourceID string, busCode int32) (err error) {
 	sign, err := t.generateSign(orderID, orderAmt, sourceID, busCode)
 	if err != nil {
 		return errutil.ErrInternal.Msg(err.Error())
 	}
-	_, err = dhc().Post(t.H5RemoteAddr, map[string]interface{}{
-		"ORDER_AMT": orderAmt,
+	_, err = httpclient.DHCP().PostForm(t.H5RemoteAddr, map[string]string{
 		"ORDER_ID":  orderID,
+		"ORDER_AMT": strconv.FormatFloat(orderAmt, 'f', 2, 10),
 		"USER_ID":   sourceID,
-		"BUS_CODE":  busCode,
+		"BUS_CODE":  strconv.Itoa(int(busCode)),
 		"PAGE_URL":  t.PageUrl,
 		"BG_URL":    t.BGUrl,
 		"SIGN":      sign,
@@ -52,16 +53,16 @@ func (t *ThirdDriver) CreateOrderForH5(sourceID, orderID string, orderAmt float6
 }
 
 // 创建扫码订单
-func (t *ThirdDriver) CreateOrderForQRCode(sourceID, orderID string, orderAmt float64, busCode int32) (err error) {
+func (t *ThirdDriver) CreateOrderForQRCode(orderID string, orderAmt float64, sourceID string, busCode int32) (err error) {
 	sign, err := t.generateSign(orderID, orderAmt, sourceID, busCode)
 	if err != nil {
 		return errutil.ErrInternal.Msg(err.Error())
 	}
-	_, err = dhc().Post(t.H5RemoteAddr, map[string]interface{}{
-		"ORDER_AMT": orderAmt,
+	_, err = httpclient.DHCP().PostForm(t.H5RemoteAddr, map[string]string{
 		"ORDER_ID":  orderID,
+		"ORDER_AMT": strconv.FormatFloat(orderAmt, 'f', 2, 10),
 		"USER_ID":   sourceID,
-		"BUS_CODE":  busCode,
+		"BUS_CODE":  strconv.Itoa(int(busCode)),
 		"PAGE_URL":  t.PageUrl,
 		"BG_URL":    t.BGUrl,
 		"SIGN":      sign,
@@ -73,17 +74,17 @@ func (t *ThirdDriver) CreateOrderForQRCode(sourceID, orderID string, orderAmt fl
 }
 
 // 取消订单
-func (t *ThirdDriver) CancelOrder(sourceID, orderID string) (output *OrderCancelOutput, err error) {
+func (t *ThirdDriver) CancelOrder(orderID, sourceID string) (output *OrderCancelOutput, err error) {
 	return
 }
 
 // 查询订单状态
-func (t *ThirdDriver) GetOrderStatus(sourceID, orderID string) (output *OrderStatusOutput, err error) {
+func (t *ThirdDriver) GetOrderStatus(orderID, sourceID string) (output *OrderStatusOutput, err error) {
 	sign, err := t.generateSign(orderID, sourceID)
 	if err != nil {
 		return nil, errutil.ErrInternal.Msg(err.Error())
 	}
-	bs, err := dhc().Post(t.StatusRemoteAddr, map[string]interface{}{
+	bs, err := httpclient.DHCP().PostForm(t.StatusRemoteAddr, map[string]string{
 		"ORDER_ID": orderID,
 		"USER_ID":  sourceID,
 		"SIGN":     sign,
@@ -117,8 +118,10 @@ func (t *ThirdDriver) generateSign(values ...interface{}) (sign string, err erro
 			m.Write([]byte(strconv.FormatFloat(float64(v), 'f', 2, 64)))
 		case int64:
 			m.Write([]byte(strconv.FormatInt(v, 10)))
+		case int:
+			m.Write([]byte(strconv.Itoa(v)))
 		default:
-			return "", fmt.Errorf("unknown sign value type %s", reflect.TypeOf(value).String())
+			return "", fmt.Errorf("unknown sign field value type %s", reflect.TypeOf(value).String())
 		}
 	}
 	sign1 := m.Sum(nil)

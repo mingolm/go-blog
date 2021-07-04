@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/mingolm/go-recharge/configs"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/middleware"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/router"
@@ -64,9 +63,7 @@ func httpServer() (h *http.Server, shutdownCallback func()) {
 		middleware.ReteLimit,
 	).Register(app.NewLogin(), app.NewApp()).HTTPRouters()
 
-	shutdownCallback = func() {
-		fmt.Println("shutdown")
-	}
+	shutdownCallback = func() {}
 
 	return &http.Server{
 		Addr: configs.DefaultConfigs.HttpListen,
