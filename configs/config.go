@@ -12,6 +12,11 @@ var DefaultConfigs = struct {
 	PAYBGUrl            string `env:"PAY_BG_URL" flag:"pay-bg-url" flagUsage:"bg url for pay"`
 	PAYH5RemoteAddr     string `env:"PAY_H5_REMOTE_ADDR" flag:"pay-h5-remote-addr-url" flagUsage:"h5 remote addr url for pay"`
 	PAYQRCodeRemoteAddr string `env:"PAY_QRCODE_REMOTE_ADDR" flag:"pay-qrcode-remote-addr-url" flagUsage:"qrcode remote addr url for pay"`
+	PAYCancelRemoteAddr string `env:"PAY_CANCEL_REMOTE_ADDR" flag:"pay-cancel-remote-addr-url" flagUsage:"cancel remote addr url for pay"`
+	PAYStatusRemoteAddr string `env:"PAY_STATUS_REMOTE_ADDR" flag:"pay-status-remote-addr-url" flagUsage:"status remote addr url for pay"`
+
+	// 代理隧道ipurl
+	ProxyIPUrl string `env:"proxy_ip_url" flag:"proxy-ip-url" flagUsage:"get ip url for proxy"`
 
 	Run    string `flag:"run" flagUsage:"run what"`
 	Mode   string `flag:"mode" flagUsage:"run mode"`

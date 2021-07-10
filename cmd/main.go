@@ -29,6 +29,8 @@ func main() {
 	switch configs.DefaultConfigs.Run {
 	case "http":
 		runHttp(ctx)
+	case "info":
+		runInfo(ctx)
 	case "tmpjob":
 		runJob(ctx, newOrderQueryJob())
 	default:

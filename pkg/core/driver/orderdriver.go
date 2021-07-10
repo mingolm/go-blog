@@ -1,5 +1,9 @@
 package driver
 
+/**
+ * 话单商交互 driver
+ */
+
 func NewOrderDriver(config *OrderDriverConfig) *OrderDriver {
 	return &OrderDriver{
 		config,

@@ -12,6 +12,8 @@ func TestGenerateSign(t *testing.T) {
 		BGUrl:            configs.DefaultConfigs.PAYBGUrl,
 		H5RemoteAddr:     configs.DefaultConfigs.PAYH5RemoteAddr,
 		QRCodeRemoteAddr: configs.DefaultConfigs.PAYQRCodeRemoteAddr,
+		CancelRemoteAddr: configs.DefaultConfigs.PAYCancelRemoteAddr,
+		StatusRemoteAddr: configs.DefaultConfigs.PAYStatusRemoteAddr,
 	})
 	_, err := td.generateSign("20180912154311shop201809131545", 100.00, "shop888", 3201)
 	if err != nil {

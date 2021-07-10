@@ -12,6 +12,7 @@ type Order interface {
 	Create(ctx context.Context, row *model.Order) (err error)
 	SetSuccessByOrderID(ctx context.Context, orderID string) (err error)
 	SetFailedByOrderID(ctx context.Context, orderID string) (err error)
+	Delete(ctx context.Context, orderID, sourceID string) (err error)
 }
 
 type OrderConfig struct {
@@ -40,20 +41,30 @@ func (r *order) GetWaitingList(ctx context.Context, id uint64, limit int) (rows 
 	}
 	return rows, nil
 }
+
 func (r *order) Create(ctx context.Context, row *model.Order) (err error) {
 	if err := r.db(ctx).Create(row).Error; err != nil {
 		return errutil.DBError(err)
 	}
 	return nil
 }
+
 func (r *order) SetSuccessByOrderID(ctx context.Context, orderID string) (err error) {
 	if err := r.db(ctx).Where("order_id=?", orderID).Update("status", model.OrderStatusSuccess).Error; err != nil {
 		return errutil.DBError(err)
 	}
 	return nil
 }
+
 func (r *order) SetFailedByOrderID(ctx context.Context, orderID string) (err error) {
 	if err := r.db(ctx).Where("order_id=?", orderID).Update("status", model.OrderStatusFailed).Error; err != nil {
+		return errutil.DBError(err)
+	}
+	return nil
+}
+
+func (r *order)Delete(ctx context.Context, orderID, sourceID string) (err error)  {
+	if err := r.db(ctx).Where("order_id=? and source_id", orderID, sourceID).Delete(&model.Order{}).Error; err != nil {
 		return errutil.DBError(err)
 	}
 	return nil

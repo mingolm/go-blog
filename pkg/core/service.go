@@ -34,13 +34,17 @@ func Instance() *Service {
 			OrderRepo: repo.NewOrderRepo(&repo.OrderConfig{
 				DB: mustNewGormDB(configs.DefaultConfigs.DatabaseDsn),
 			}),
-			OrderDriver: driver.NewOrderDriver(&driver.OrderDriverConfig{}),
+			OrderDriver: driver.NewOrderDriver(&driver.OrderDriverConfig{
+
+			}),
 			ThirdDriver: driver.NewThirdDriver(&driver.ThirdConfig{
 				Key:              configs.DefaultConfigs.PAYKey,
 				PageUrl:          configs.DefaultConfigs.PAYPageUrl,
 				BGUrl:            configs.DefaultConfigs.PAYBGUrl,
 				H5RemoteAddr:     configs.DefaultConfigs.PAYH5RemoteAddr,
 				QRCodeRemoteAddr: configs.DefaultConfigs.PAYQRCodeRemoteAddr,
+				CancelRemoteAddr: configs.DefaultConfigs.PAYCancelRemoteAddr,
+				StatusRemoteAddr: configs.DefaultConfigs.PAYStatusRemoteAddr,
 			}),
 			Logger: zap.S(),
 		}

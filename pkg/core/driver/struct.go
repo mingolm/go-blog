@@ -1,5 +1,6 @@
 package driver
 
+// 四方取消订单
 type OrderCancelOutput struct {
 	Success bool        `json:"success"`
 	Code    int         `json:"code"`
@@ -7,6 +8,7 @@ type OrderCancelOutput struct {
 	Result  interface{} `json:"result"`
 }
 
+// 四方查询订单状态
 type OrderStatusOutput struct {
 	Success bool              `json:"success"`
 	Code    int               `json:"code"`
@@ -14,6 +16,7 @@ type OrderStatusOutput struct {
 	Result  OrderStatusResult `json:"result"`
 }
 
+// 四方查询订单状态，详细 result
 type OrderStatusResult struct {
 	OrderID    string     `json:"ORDER_ID"`
 	OrderAMT   float64    `json:"ORDER_AMT"`

@@ -5,6 +5,7 @@ import (
 	"github.com/mingolm/go-recharge/pkg/tmpjob"
 )
 
+// 订单查询 job
 func newOrderQueryJob() tmpjob.Job {
 	return tmpjob.NewOrderQueryJob()
 }

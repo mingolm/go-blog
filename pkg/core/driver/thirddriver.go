@@ -11,6 +11,10 @@ import (
 	"strconv"
 )
 
+/**
+ * 四方交互 driver
+ */
+
 func NewThirdDriver(config *ThirdConfig) *ThirdDriver {
 	return &ThirdDriver{
 		config,
@@ -75,7 +79,26 @@ func (t *ThirdDriver) CreateOrderForQRCode(orderID string, orderAmt float64, sou
 
 // 取消订单
 func (t *ThirdDriver) CancelOrder(orderID, sourceID string) (output *OrderCancelOutput, err error) {
-	return
+	sign, err := t.generateSign(orderID, sourceID)
+	if err != nil {
+		return nil, errutil.ErrInternal.Msg(err.Error())
+	}
+	bs, err := httpclient.DHCP().PostForm(t.CancelRemoteAddr, map[string]string{
+		"ORDER_ID": orderID,
+		"USER_ID":  sourceID,
+		"SIGN":     sign,
+	})
+	if err != nil {
+		return nil, errutil.ErrInternal.Msg(err.Error())
+	}
+	output = &OrderCancelOutput{}
+	if err := json.Unmarshal(bs, output); err != nil {
+		return nil, errutil.ErrInternal.Msg(err.Error())
+	}
+	if !output.Success || output.Code != 200 {
+		return nil, errutil.ErrInternal.Msg(output.Desc)
+	}
+	return output, nil
 }
 
 // 查询订单状态
@@ -97,7 +120,7 @@ func (t *ThirdDriver) GetOrderStatus(orderID, sourceID string) (output *OrderSta
 		return nil, errutil.ErrInternal.Msg(err.Error())
 	}
 	if !output.Success || output.Code != 200 {
-		return nil, errutil.ErrInternal.Msg(string(bs))
+		return nil, errutil.ErrInternal.Msg(output.Desc)
 	}
 
 	return output, nil

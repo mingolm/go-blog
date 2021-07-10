@@ -7,6 +7,6 @@ func DHC() *httputil.HTTPClient {
 }
 
 func DHCP() *httputil.HTTPClient {
-	ps := ProxyInstance()
-	return httputil.NewHTTPClient(&httputil.HTTPClientConfig{}).Proxy(ps.GetProxy())
+	ins := ProxyInstance()
+	return httputil.NewHTTPClient(&httputil.HTTPClientConfig{}).Proxy(ins.GetProxy())
 }
