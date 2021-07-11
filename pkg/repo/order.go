@@ -63,7 +63,7 @@ func (r *order) SetFailedByOrderID(ctx context.Context, orderID string) (err err
 	return nil
 }
 
-func (r *order)Delete(ctx context.Context, orderID, sourceID string) (err error)  {
+func (r *order) Delete(ctx context.Context, orderID, sourceID string) (err error) {
 	if err := r.db(ctx).Where("order_id=? and source_id", orderID, sourceID).Delete(&model.Order{}).Error; err != nil {
 		return errutil.DBError(err)
 	}

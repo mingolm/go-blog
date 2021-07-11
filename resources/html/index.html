@@ -2,10 +2,87 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name=”keywords” content="Mingo Blog 技术博客">
+    <meta name=”description” content="Mingo Blog"/>
+    <link rel="stylesheet" type="text/css" href="/resources/css/common.css">
+    <script type="text/javascript" src="/resources/js/jquery-3.6.0.min.js"></script>
+    <title>Mingo's Blog - Home page</title>
 </head>
 <body>
-<div>123</div>
-{{.Username}}
+<header>
+    <a href="#" class="logo">Mingo's Blog</a>
+    <ul class="navigation">
+        <li><a href="/index">首页</a></li>
+        <li><a href="/article">归档</a></li>
+        <li><a href="/leave">留言板</a></li>
+        <li><a href="/about">关于我</a></li>
+        <li><a href="https://github.com/mingolm" target="_blank">Github</a></li>
+    </ul>
+</header>
+<div id="container">
+    <div id="content">
+        <section class="posts">
+            <div class="post-header">
+                <h1 class="post-title">
+                    <a href="/article/1" class="post-link">Golang http 服务搭建</a>
+                </h1>
+                <div class="post-meta">
+                    <span class="post-meta-value post-meta-time">2021-06-09 12:23</span>
+                    <span class="post-meta-value post-meta-type">服务端·Golang</span>
+                    <span class="post-meta-value post-meta-more">约6322字</span>
+                    <span class="post-meta-value post-meta-more">建议阅读10分钟</span>
+                </div>
+            </div>
+            <div class="post-content">
+                <div class="post-summary">简介 colly是用 Go 语言编写的功能强大的爬虫框架。它提供简洁的 API，拥有强劲的性能，可以自动处理 cookie&session，还有...
+                </div>
+                <div class="post-more"><a href="/index/1">阅读更多>>></a></div>
+            </div>
+        </section>
+        <section class="posts">
+            <div class="post-header">
+                <h1 class="post-title">
+                    <a href="/article/1" class="post-link">Golang http 服务搭建2</a>
+                </h1>
+                <div class="post-meta">
+                    <span class="post-meta-time">2021-06-09 12:23</span>
+                    <span class="post-meta-type">服务端·Golang</span>
+                    <span class="post-meta-more">约 6322字</span>
+                    <span class="post-meta-more">建议阅读 10 分钟</span>
+                </div>
+            </div>
+            <div class="post-content">
+                <div class="post-summary">简介 colly是用 Go 语言编写的功能强大的爬虫框架。它提供简洁的 API，拥有强劲的性能，可以自动处理 cookie&session，还有可以自动处理
+                    cookie&session，可以自动处理 cookie&session，...
+                </div>
+                <div class="post-more"><a href="/index/1">阅读更多>>></a></div>
+            </div>
+        </section>
+    </div>
+    <div id="paging">
+        <ul class="pagination">
+            <li><a href="#">上一页</a></li>
+            {{$currPage := .Pages.CurrPage}}
+            {{range $v := .Pages.Pages}}
+            {{if eq $v $currPage}}
+            <li><a class="active" href="?page={{$v}}">{{$v}}</a></li>
+            {{else}}
+            <li><a href="?page={{$v}}">{{$v}}</a></li>
+            {{end}}
+            {{end}}
+            <li><a href="#">下一页</a></li>
+        </ul>
+    </div>
+    <div id="footer">
+        <div class="copyright">
+            <p>
+                <span>Copyright©2021 ｜ </span>
+                <span>Mingo's Blog ｜ </span>
+                <span>闽ICP备15016281号-3</span>
+            </p>
+        </div>
+    </div>
+</div>
 </body>
 </html>

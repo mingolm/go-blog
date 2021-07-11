@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"github.com/mingolm/go-recharge/configs"
+	"github.com/mingolm/go-recharge/pkg/httpsvc/ctrl"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/middleware"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/router"
-	"github.com/mingolm/go-recharge/pkg/httpsvc/router/app"
 	"net"
 	"net/http"
 	"time"
@@ -61,7 +61,11 @@ func httpServer() (h *http.Server, shutdownCallback func()) {
 	routers := svcRouter.RegisterMiddleware(
 		middleware.Context,
 		middleware.ReteLimit,
-	).Register(app.NewLogin(), app.NewApp()).HTTPRouters()
+	).Register(
+		ctrl.NewLogin(),
+		ctrl.NewIndex(),
+		ctrl.NewApp(),
+	).HTTPRouters()
 
 	shutdownCallback = func() {}
 

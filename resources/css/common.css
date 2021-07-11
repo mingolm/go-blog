@@ -1,0 +1,164 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: source sans pro, helvetica neue, Arial, sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.8;
+    color: rgba(0, 0, 0, .84);
+    background: #f2f2f5;
+    scroll-behavior: smooth;
+}
+
+a {
+    color: rgba(0, 0, 0, .84);
+    text-decoration: none;
+}
+
+header {
+    left: 0;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 100px;
+    z-index: 10;
+    background: #fff;
+}
+
+header .logo {
+    position: relative;
+    font-size: 1.5em;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+header .navigation {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 10px 0;
+}
+
+header .navigation li {
+    list-style: none;
+    margin: 0 20px;
+}
+
+header .navigation li a {
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+header .navigation li a:hover {
+    color: #c05b4d;
+}
+
+#container {
+    padding: 3em 0 1px;
+}
+
+.posts {
+    max-width: 1080px;
+    margin: 0 auto 3em;
+    padding: 2em 5em;
+    background: #fff;
+}
+
+.posts .post-header {
+    margin-bottom: 20px;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 2px LightGrey solid;
+}
+
+.posts .post-meta {
+    font-size: 14px;
+    color: #8a8a8a;
+}
+
+.posts .post-content {
+    padding: 3px 0;
+}
+
+.posts .post-summary {
+    color: #666;
+    line-height: 33px;
+    font-size: 15px;
+}
+
+.posts .post-more {
+    text-align: right;
+    margin: 15px 0 0 0;
+}
+
+.posts .post-more a {
+    font-size: 13px;
+    color: #c05b4d;
+}
+
+.posts .post-more a:hover {
+    color: burlywood;
+}
+
+#paging {
+    text-align: center;
+}
+
+ul.pagination {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+
+ul.pagination li {
+    display: inline;
+}
+
+ul.pagination li a {
+    color: black;
+    float: left;
+    padding: 6px 13px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+ul.pagination li a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+ul.pagination li a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+#footer {
+    text-align: center;
+    font-size: 13px;
+    margin: 15px 0;
+}
+
+/*屏幕宽度小于991px,改变布局和样式*/
+@media screen and (max-width: 991px) {
+    header {
+        padding: 10px 20px;
+        flex-direction: column;
+    }
+}
+
+/*屏幕宽度小于600px,改变布局和样式*/
+@media screen and (max-width: 600px) {
+    header .search {
+        width: 100%;
+    }
+}

@@ -1,4 +1,4 @@
-package app
+package ctrl
 
 import (
 	"github.com/mingolm/go-recharge/pkg/core"
@@ -23,11 +23,6 @@ type App struct {
 
 func (s *App) Routers() router.Routers {
 	return []router.Router{
-		{ // 首页
-			Path:    "/index",
-			Handler: s.index,
-			Method:  "GET",
-		},
 		{ // 创建四方订单（h5）
 			Path:    "/order",
 			Handler: s.order,
@@ -52,14 +47,6 @@ func (s *App) Middlewares() []middleware.Middleware {
 
 type Order struct {
 	ID string
-}
-
-func (s *App) index(req *http.Request) (resp response.Response, err error) {
-	return response.Html("index", struct {
-		Username string `json:"username"`
-	}{
-		Username: "123",
-	}), nil
 }
 
 type CreateOrderOutput struct {
