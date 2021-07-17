@@ -41,3 +41,22 @@ func Interface2Int64(value interface{}) (n int64) {
 
 	return
 }
+
+func Interface2Uint64(value interface{}) (n uint64) {
+	switch v := value.(type) {
+	case string:
+		n, _ = strconv.ParseUint(v, 10, 64)
+	case int:
+		n = uint64(v)
+	case int32:
+		n = uint64(v)
+	case int64:
+		n = uint64(v)
+	case uint32:
+		n = uint64(v)
+	case uint64:
+		n = v
+	}
+
+	return
+}

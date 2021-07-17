@@ -15,6 +15,7 @@ type Service struct {
 	UserRepo    repo.User
 	OrderRepo   repo.Order
 	ArticleRepo repo.Article
+	LeaveRepo   repo.Leave
 
 	OrderDriver *driver.OrderDriver // 话单商
 	ThirdDriver *driver.ThirdDriver // 四方

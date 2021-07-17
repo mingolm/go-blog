@@ -6,9 +6,9 @@ import (
 )
 
 type httpResponse struct {
-	Data    interface{} `json:"data"`
-	Cookies []*http.Cookie
-	Success bool `json:"success"`
+	Data    interface{}    `json:"data"`
+	Cookies []*http.Cookie `json:"-"`
+	Success bool           `json:"success"`
 }
 
 func (h *httpResponse) Headers() (headers map[string]string) {

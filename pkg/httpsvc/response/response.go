@@ -11,17 +11,6 @@ type Response interface {
 	Bytes() (bs []byte, err error)
 }
 
-var ErrInternalBytes []byte
-var Success Response
-
-func init() {
-	ErrInternalBytes, _ = (&httpResponse{
-		Data: "",
-	}).Bytes()
-	Success = &httpResponse{
-		Data: "ok",
-	}
-}
 
 func Data(v interface{}) Response {
 	return &httpResponse{

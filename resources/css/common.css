@@ -142,7 +142,7 @@ header .navigation li a:hover {
     background-color: #ddd;
 }
 
-#article-content, #about-content {
+#article-content, #about-content, #leave-content {
     max-width: 1080px;
     margin: 0 auto 3em;
     padding: 2em 5em;
@@ -160,13 +160,119 @@ header .navigation li a:hover {
 .article-rows .article-detail-link {
 }
 
-.article-rows .article-detail-link:hover{
-    text-decoration:underline;
+.article-rows .article-detail-link:hover {
+    text-decoration: underline;
 }
 
 .article-rows .article-info {
     font-size: 12px;
     color: #8a8a8a;
+}
+
+.tap-banner {
+    border-bottom: #666666 solid 1px;
+    margin-bottom: 1em;
+}
+
+.tap-banner p {
+    line-height: 2em;
+}
+
+.tap-banner span {
+    color: #666666;
+}
+
+
+.leave-input {
+
+}
+
+.leave-input .leave-input-content {
+    width: 100%;
+    height: 150px;
+    padding: 10px 10px;
+    margin: 2px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.leave-info {
+    text-align: right;
+}
+
+.leave-info .leave-sender-email {
+    max-width: 250px;
+    width: 100%;
+    padding: 10px 10px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.leave-info .leave-submit {
+    background-color: #4CAF50;
+    color: white;
+    padding: 9px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.leave-info .leave-submit:hover {
+    background-color: #45a049;
+}
+
+.leave-rows {
+
+}
+
+.leave-rows .leave-row {
+    margin-bottom: 2em;
+}
+
+.leave-rows .leave-row::after {
+    content: "020";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.leave-rows .leave-avatar {
+    width: 10%;
+    max-width: 80px;
+    text-align: center;
+    height: 100%;
+    float: left;
+}
+
+.leave-rows .leave-avatar svg {
+    width: 100%;
+    height: 100%;
+}
+
+.leave-rows .leave-detail {
+    float: left;
+    width: 90%;
+}
+
+.leave-rows .leave-detail-info-sender {
+    color: darkcyan;
+}
+
+.leave-rows .leave-detail-info-created-at {
+    color: #c05b4d;
+    font-size: 12px;
+}
+
+.leave-rows .leave-detail-content {
+    font-size: 14px;
+    color: #666666;
 }
 
 #footer {
@@ -181,11 +287,23 @@ header .navigation li a:hover {
         padding: 10px 20px;
         flex-direction: column;
     }
+    .leave-rows .leave-avatar {
+        width: 20%;
+    }
+    .leave-rows .leave-detail {
+        width: 80%;
+    }
 }
 
 /*屏幕宽度小于600px,改变布局和样式*/
 @media screen and (max-width: 600px) {
     header .search {
         width: 100%;
+    }
+    .leave-rows .leave-avatar {
+        width: 30%;
+    }
+    .leave-rows .leave-detail {
+        width: 70px;
     }
 }

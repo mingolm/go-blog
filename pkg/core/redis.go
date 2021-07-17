@@ -2,6 +2,7 @@ package core
 
 import (
 	"github.com/go-redis/redis/v8"
+	"go.uber.org/zap"
 	"sync"
 )
 
@@ -14,6 +15,10 @@ func NewRedisCache(addr, password string) redis.Cmdable {
 			Addr:     addr,
 			Password: password,
 		})
+
+		zap.S().Infow("redis: new client success",
+			"addr", addr,
+		)
 	})
 	return redisCacheClient
 }

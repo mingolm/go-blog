@@ -56,9 +56,9 @@ func (c *articleCache) GetList(ctx context.Context) (output []*ArticleInfo, err 
 }
 
 type GetTotalsOutput struct {
-	TotalNormal int64 `json:"total_normal"`
-	TotalUp     int64 `json:"total_up"`
-	TotalHide   int64 `json:"total_hide"`
+	TotalNormal uint64 `json:"total_normal"`
+	TotalUp     uint64 `json:"total_up"`
+	TotalHide   uint64 `json:"total_hide"`
 }
 
 func (c *articleCache) GetTotals(ctx context.Context) (output *GetTotalsOutput, err error) {
@@ -68,9 +68,9 @@ func (c *articleCache) GetTotals(ctx context.Context) (output *GetTotalsOutput, 
 	}
 
 	return &GetTotalsOutput{
-		TotalNormal: helputil.Interface2Int64(result[0]),
-		TotalUp:     helputil.Interface2Int64(result[1]),
-		TotalHide:   helputil.Interface2Int64(result[2]),
+		TotalNormal: helputil.Interface2Uint64(result[0]),
+		TotalUp:     helputil.Interface2Uint64(result[1]),
+		TotalHide:   helputil.Interface2Uint64(result[2]),
 	}, nil
 }
 

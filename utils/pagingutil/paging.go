@@ -10,7 +10,7 @@ type Paging struct {
 	CurrPage int   `json:"curr_page"`
 }
 
-func Paginator(page, pageLimit int, nums int64) *Paging {
+func Paginator(page, pageLimit int, nums uint64) *Paging {
 	var PrevPage int                                            //前一页地址
 	var NextPage int                                            //后一页地址
 	Total := int(math.Ceil(float64(nums) / float64(pageLimit))) //page总数
