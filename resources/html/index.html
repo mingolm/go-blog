@@ -7,6 +7,7 @@
     <meta name=”description” content="Mingo Blog"/>
     <link rel="stylesheet" type="text/css" href="/resources/css/common.css">
     <script type="text/javascript" src="/resources/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="/resources/js/index.js"></script>
     <title>Mingo's Blog - Home page</title>
 </head>
 <body>
@@ -62,16 +63,16 @@
     </div>
     <div id="paging">
         <ul class="pagination">
-            <li><a href="#">上一页</a></li>
+            <li><a href="?page={{.Pages.PrevPage}}">上一页</a></li>
             {{$currPage := .Pages.CurrPage}}
             {{range $v := .Pages.Pages}}
             {{if eq $v $currPage}}
-            <li><a class="active" href="?page={{$v}}">{{$v}}</a></li>
+            <li><a class="page-link page-active" href="?page={{$v}}">{{$v}}</a></li>
             {{else}}
-            <li><a href="?page={{$v}}">{{$v}}</a></li>
+            <li><a class="page-link" href="?page={{$v}}">{{$v}}</a></li>
             {{end}}
             {{end}}
-            <li><a href="#">下一页</a></li>
+            <li><a href="?page={{.Pages.NextPage}}">下一页</a></li>
         </ul>
     </div>
     <div id="footer">

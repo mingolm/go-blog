@@ -65,6 +65,8 @@ func httpServer() (h *http.Server, shutdownCallback func()) {
 		ctrl.NewLogin(),
 		ctrl.NewIndex(),
 		ctrl.NewApp(),
+		ctrl.NewArticle(),
+		ctrl.NewAbout(),
 	).HTTPRouters()
 
 	shutdownCallback = func() {}

@@ -1,7 +1,6 @@
 package ctrl
 
 import (
-	"fmt"
 	"github.com/mingolm/go-recharge/pkg/cache"
 	"github.com/mingolm/go-recharge/pkg/core"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/middleware"
@@ -23,7 +22,7 @@ func NewIndex() *Index {
 
 type Index struct {
 	*core.Service
-	articleCache *cache.Article
+	articleCache cache.ArticleCache
 	Limit        int
 }
 
@@ -53,7 +52,6 @@ func (s *Index) index(req *http.Request) (resp response.Response, err error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(totalOutput, err)
 
 	return response.Html("index", struct {
 		Rows  []*model.Article   `json:"rows"`

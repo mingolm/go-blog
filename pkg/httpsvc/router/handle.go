@@ -5,6 +5,7 @@ import (
 	"github.com/mingolm/go-recharge/pkg/httpsvc/middleware"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/response"
 	"github.com/mingolm/go-recharge/utils/errutil"
+	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -16,6 +17,13 @@ type Handler struct {
 
 func (h *Handler) HTTPHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+				zap.S().Errorw("panic for http handle",
+					"err", err,
+				)
+			}
+		}()
 		resp, err := h.handle(r)
 		var httpStatusCode int
 		if err != nil {
@@ -44,7 +52,7 @@ func (h *Handler) HTTPHandler() http.HandlerFunc {
 		bs, err := resp.Bytes()
 		if err != nil {
 			httpStatusCode = http.StatusInternalServerError
-			bs = response.ErrInternalBytes
+			bs, _ = response.Error(err).Bytes()
 		}
 
 		w.WriteHeader(httpStatusCode)
