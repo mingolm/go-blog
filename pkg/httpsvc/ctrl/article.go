@@ -28,6 +28,11 @@ func (s *Article) Routers() router.Routers {
 			Handler: s.article,
 			Method:  "GET",
 		},
+		{ // 文章详情
+			Path:    "/article/{id}",
+			Handler: s.articleDetail,
+			Method:  "GET",
+		},
 	}
 }
 
@@ -36,6 +41,14 @@ func (s *Article) Middlewares() []middleware.Middleware {
 }
 
 func (s *Article) article(req *http.Request) (resp response.Response, err error) {
+	rows, err := s.articleCache.GetList(req.Context())
+	if err != nil {
+		return nil, err
+	}
+	return response.Html("article", rows), nil
+}
+
+func (s *Article) articleDetail(req *http.Request) (resp response.Response, err error) {
 	rows, err := s.articleCache.GetList(req.Context())
 	if err != nil {
 		return nil, err

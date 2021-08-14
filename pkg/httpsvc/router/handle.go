@@ -7,12 +7,23 @@ import (
 	"github.com/mingolm/go-recharge/utils/errutil"
 	"go.uber.org/zap"
 	"net/http"
+	"regexp"
+	"strings"
 )
 
 type Handler struct {
 	routerMiddlewaresSet map[string][]middleware.Middleware
 	routerSet            map[string]Router
 	routerMethodSet      map[string]struct{}
+	routerRegResult      []routerRegDetail
+}
+
+type routerRegDetail struct {
+	reg         *regexp.Regexp
+	method      string
+	keys        []string
+	middlewares []middleware.Middleware
+	router      Router
 }
 
 func (h *Handler) HTTPHandler() http.HandlerFunc {
@@ -65,20 +76,53 @@ func (h *Handler) HTTPHandler() http.HandlerFunc {
 }
 
 func (h *Handler) handle(r *http.Request) (resp response.Response, err error) {
-	routerIndex := fmt.Sprintf("%s#%s", r.URL.Path, r.Method)
+	requestPath := strings.TrimRight(r.URL.Path, "/")
+	routerIndex := fmt.Sprintf("%s#%s", requestPath, r.Method)
 	router, ok := h.routerSet[routerIndex]
+	middlewares, _ := h.routerMiddlewaresSet[routerIndex]
 	if !ok {
-		if _, methodNotAllowed := h.routerMethodSet[r.URL.Path]; methodNotAllowed {
+		if _, methodNotAllowed := h.routerMethodSet[requestPath]; methodNotAllowed {
 			return nil, errutil.ErrMethodNotAllowed
 		}
-		return nil, errutil.ErrPageNotFound
+		detailRouter, err := h.parseRegRouter(r, requestPath)
+		if err != nil {
+			return nil, err
+		}
+		router = detailRouter.router
+		middlewares = detailRouter.middlewares
 	}
 	hl := router.Handler
-	if middlewares, ok := h.routerMiddlewaresSet[routerIndex]; ok {
+	if middlewares != nil {
 		for i := range middlewares {
 			hl = middlewares[len(middlewares)-i-1](hl)
 		}
 	}
 
 	return hl(r)
+}
+
+func (h *Handler) parseRegRouter(r *http.Request, path string) (router *routerRegDetail, err error) {
+	for _, detail := range h.routerRegResult {
+		regResults := detail.reg.FindAllStringSubmatch(path, -1)
+		if len(regResults) == 0 {
+			continue
+		}
+		if detail.method != r.Method {
+			return nil, errutil.ErrMethodNotAllowed
+		}
+		for _, result := range regResults {
+			if len(result[1:]) != len(detail.keys) {
+				continue
+			}
+			for index, value := range result[1:] {
+				if r.Form == nil {
+					r.Form = make(map[string][]string, 0)
+				}
+				r.Form.Set(detail.keys[index], value)
+			}
+		}
+		return &detail, nil
+	}
+
+	return nil, errutil.ErrPageNotFound
 }
