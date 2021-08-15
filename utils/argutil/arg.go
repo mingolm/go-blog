@@ -10,8 +10,10 @@ import (
 	"unsafe"
 )
 
-func Parse(v interface{}) {
-	ParseSlice(v, os.Args[1:])
+func Parse(v ...interface{}) {
+	for _, c := range v {
+		ParseSlice(c, os.Args[1:])
+	}
 }
 
 func ParseSlice(v interface{}, args []string) {

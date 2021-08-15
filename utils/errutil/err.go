@@ -8,6 +8,7 @@ import (
 type Error struct {
 	err     error
 	message string
+	base    bool
 }
 
 func (e *Error) Unwrap() error {
@@ -22,15 +23,24 @@ func (e *Error) Error() string {
 }
 
 func (e *Error) Msg(message string) *Error {
+	if e.base {
+		return &Error{
+			err:     e.err,
+			message: message,
+			base:    true,
+		}
+	}
 	return &Error{
 		err:     e,
 		message: message,
+		base:    true,
 	}
 }
 
 func NewBase(err error) *Error {
 	return &Error{
-		err: err,
+		err:  err,
+		base: false,
 	}
 }
 

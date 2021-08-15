@@ -2,6 +2,7 @@ package router
 
 import (
 	"fmt"
+	"github.com/mingolm/go-recharge/configs"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/middleware"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/response"
 	"github.com/mingolm/go-recharge/utils/errutil"
@@ -39,14 +40,23 @@ func (h *Handler) HTTPHandler() http.HandlerFunc {
 		var httpStatusCode int
 		if err != nil {
 			switch err {
+			case errutil.ErrNotFound:
+				httpStatusCode = http.StatusNotFound
+				if r.Method == "GET" {
+					resp = response.Html(configs.SystemConfig.TemplateNotFoundPage, nil)
+				} else {
+					resp = response.Error(err)
+				}
 			case errutil.ErrPageNotFound:
 				httpStatusCode = http.StatusNotFound
+				resp = response.Html(configs.SystemConfig.TemplateNotFoundPage, nil)
 			case errutil.ErrMethodNotAllowed:
 				httpStatusCode = http.StatusMethodNotAllowed
+				resp = response.Error(err)
 			default:
 				httpStatusCode = http.StatusInternalServerError
+				resp = response.Error(err)
 			}
-			resp = response.Error(err)
 		} else {
 			httpStatusCode = http.StatusOK
 		}

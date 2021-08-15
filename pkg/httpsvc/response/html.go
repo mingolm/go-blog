@@ -3,17 +3,15 @@ package response
 import (
 	"bytes"
 	"fmt"
+	"github.com/mingolm/go-recharge/configs"
 	"github.com/mingolm/go-recharge/utils/errutil"
 	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
-)
-
-const (
-	templateBasePath = "resources/html/"
 )
 
 var (
@@ -56,7 +54,8 @@ func (h *htmlResponse) Bytes() (bs []byte, err error) {
 }
 
 func (h *htmlResponse) getTemplate() (*template.Template, error) {
-	tmpl, ok := templateSet[h.Filename]
+	filename := h.Filename
+	tmpl, ok := templateSet[filename]
 	if ok && tmpl == nil {
 		return nil, errutil.ErrNotFound
 	}
@@ -66,21 +65,28 @@ func (h *htmlResponse) getTemplate() (*template.Template, error) {
 			templateLoadLocker.Unlock()
 		}()
 
-		bs, err := ioutil.ReadFile(filepath.Join(templateBasePath, h.Filename+".html"))
+		filePath := filename
+		if !strings.HasPrefix(filePath, configs.SystemConfig.TemplateHtmlPrefix) {
+			if !strings.HasSuffix(filePath, configs.SystemConfig.TemplateBladeType) {
+				filePath += fmt.Sprintf(".%s", configs.SystemConfig.TemplateBladeType)
+			}
+			filePath = filepath.Join(configs.SystemConfig.TemplateHtmlPrefix, filePath)
+		}
+		bs, err := ioutil.ReadFile(filePath)
 		if err != nil {
 			if os.IsNotExist(err) {
-				templateSet[h.Filename] = nil
+				templateSet[filename] = nil
 				return nil, errutil.ErrUnimplemented
 			}
 			return nil, fmt.Errorf("read template failed: %w", err)
 		}
 
-		tmpl, err = template.New(h.Filename).Parse(string(bs))
+		tmpl, err = template.New(filename).Parse(string(bs))
 		if err != nil {
 			return nil, err
 		}
 
-		templateSet[h.Filename] = tmpl
+		templateSet[filename] = tmpl
 	}
 
 	return tmpl, nil

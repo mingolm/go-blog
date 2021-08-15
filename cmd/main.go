@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// 配置初始化
-	argutil.Parse(&configs.DefaultConfigs)
+	argutil.Parse(&configs.SystemConfig, &configs.DefaultConfigs)
 
 	// 日志初始化
 	initLogger()

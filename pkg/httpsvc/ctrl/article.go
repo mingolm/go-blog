@@ -6,7 +6,9 @@ import (
 	"github.com/mingolm/go-recharge/pkg/httpsvc/middleware"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/response"
 	"github.com/mingolm/go-recharge/pkg/httpsvc/router"
+	"github.com/mingolm/go-recharge/utils/errutil"
 	"net/http"
+	"strconv"
 )
 
 func NewArticle() *Article {
@@ -49,9 +51,13 @@ func (s *Article) article(req *http.Request) (resp response.Response, err error)
 }
 
 func (s *Article) articleDetail(req *http.Request) (resp response.Response, err error) {
-	rows, err := s.articleCache.GetList(req.Context())
+	id, err := strconv.ParseUint(req.FormValue("id"), 10, 64)
+	if err != nil {
+		return nil, errutil.ErrInvalidArguments.Msg("id")
+	}
+	row, err := s.articleCache.Get(req.Context(), id)
 	if err != nil {
 		return nil, err
 	}
-	return response.Html("article", rows), nil
+	return response.Html("article_detail", row), nil
 }

@@ -28,7 +28,7 @@ func newGormDB(dsn string) (*gorm.DB, error) {
 	}
 
 	gormConfig := &gorm.Config{}
-	if configs.DefaultConfigs.Mode == "dev" {
+	if !configs.IsProd() {
 		gormConfig.Logger = gmLogger.New(
 			log.New(os.Stdout, "\r\n", log.LstdFlags),
 			gmLogger.Config{

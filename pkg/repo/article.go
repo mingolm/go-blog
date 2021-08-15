@@ -18,6 +18,7 @@ type Article interface {
 
 	// internal
 	GetTotals(ctx context.Context) (output *GetTotalsOutput, err error)
+	GetAllList(ctx context.Context) (rows []*model.Article, err error)
 }
 
 func NewArticleRepo(config *ArticleConfig) Article {
@@ -35,7 +36,7 @@ type article struct {
 }
 
 func (r *article) db(ctx context.Context) *gorm.DB {
-	return r.DB.WithContext(ctx)
+	return r.DB.WithContext(ctx).Model(&model.Article{})
 }
 
 func (r *article) Get(ctx context.Context, id uint64) (row *model.Article, err error) {
@@ -49,7 +50,7 @@ func (r *article) Get(ctx context.Context, id uint64) (row *model.Article, err e
 
 func (r *article) GetList(ctx context.Context, offset, limit int) (rows []*model.Article, err error) {
 	rows = make([]*model.Article, 0)
-	err = r.db(ctx).Where("status=?", model.ArticleStatusNormal).Order("id desc").Offset(offset).Limit(limit).Find(&rows).Error
+	err = r.db(ctx).Where("status=?", model.ArticleStatusNormal).Order("created_at desc").Offset(offset).Limit(limit).Find(&rows).Error
 	if err != nil {
 		return nil, errutil.DBError(err)
 	}
@@ -127,4 +128,13 @@ func (r *article) GetTotals(ctx context.Context) (output *GetTotalsOutput, err e
 		TotalUp:     totalUp,
 		TotalHide:   totalHide,
 	}, nil
+}
+
+func (r *article) GetAllList(ctx context.Context) (rows []*model.Article, err error) {
+	rows = make([]*model.Article, 0)
+	err = r.db(ctx).Where("status=?", model.ArticleStatusNormal).Order("created_at desc").Find(&rows).Error
+	if err != nil {
+		return nil, errutil.DBError(err)
+	}
+	return rows, nil
 }

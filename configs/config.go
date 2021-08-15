@@ -27,5 +27,5 @@ var DefaultConfigs = struct {
 	RedisAddr:     "127.0.0.1:6379",
 	RedisPassword: "",
 	Run:           "http",
-	Mode:          "prod",
+	Mode:          "dev",
 }
