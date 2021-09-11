@@ -17,7 +17,7 @@ type Article interface {
 	Delete(ctx context.Context, id uint64) (err error)
 
 	// internal
-	GetTotals(ctx context.Context) (output *GetTotalsOutput, err error)
+	GetTotal(ctx context.Context) (total int64, err error)
 	GetAllList(ctx context.Context) (rows []*model.Article, err error)
 }
 
@@ -104,30 +104,12 @@ type GetTotalsOutput struct {
 	TotalHide   int64
 }
 
-func (r *article) GetTotals(ctx context.Context) (output *GetTotalsOutput, err error) {
-	var totalNormal int64
-	err = r.db(ctx).Where("status=?", model.ArticleStatusNormal).Count(&totalNormal).Error
+func (r *article) GetTotal(ctx context.Context) (total int64, err error) {
+	err = r.db(ctx).Where("status=?", model.ArticleStatusNormal).Count(&total).Error
 	if err != nil {
-		return nil, errutil.DBError(err)
+		return 0, errutil.DBError(err)
 	}
-
-	var totalUp int64
-	err = r.db(ctx).Where("status=?", model.ArticleStatusUp).Count(&totalUp).Error
-	if err != nil {
-		return nil, errutil.DBError(err)
-	}
-
-	var totalHide int64
-	err = r.db(ctx).Where("status=?", model.ArticleStatusHide).Count(&totalHide).Error
-	if err != nil {
-		return nil, errutil.DBError(err)
-	}
-
-	return &GetTotalsOutput{
-		TotalNormal: totalNormal,
-		TotalUp:     totalUp,
-		TotalHide:   totalHide,
-	}, nil
+	return total, nil
 }
 
 func (r *article) GetAllList(ctx context.Context) (rows []*model.Article, err error) {

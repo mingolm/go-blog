@@ -53,7 +53,10 @@ func (h *htmlResponse) Bytes() (bs []byte, err error) {
 	return buf.Bytes(), nil
 }
 
-func (h *htmlResponse) getTemplate() (*template.Template, error) {
+var templateCommonLoadOnce sync.Once
+var templateCommonPaths []string
+
+func (h *htmlResponse) getTemplate() (tmpl *template.Template, err error) {
 	filename := h.Filename
 	tmpl, ok := templateSet[filename]
 	if ok && tmpl == nil {
@@ -65,6 +68,19 @@ func (h *htmlResponse) getTemplate() (*template.Template, error) {
 			templateLoadLocker.Unlock()
 		}()
 
+		templateCommonLoadOnce.Do(func() {
+			commonDir := configs.SystemConfig.TemplateHtmlCommon
+			if commonDir != "" {
+				files, err := ioutil.ReadDir(commonDir)
+				if err != nil {
+					panic(fmt.Sprintf("template common dir load failed. [dir=%s, err=%s]", commonDir, err.Error()))
+				}
+				for _, f := range files {
+					templateCommonPaths = append(templateCommonPaths, fmt.Sprintf("%s%s", commonDir, f.Name()))
+				}
+			}
+		})
+
 		filePath := filename
 		if !strings.HasPrefix(filePath, configs.SystemConfig.TemplateHtmlPrefix) {
 			if !strings.HasSuffix(filePath, configs.SystemConfig.TemplateBladeType) {
@@ -72,20 +88,18 @@ func (h *htmlResponse) getTemplate() (*template.Template, error) {
 			}
 			filePath = filepath.Join(configs.SystemConfig.TemplateHtmlPrefix, filePath)
 		}
-		bs, err := ioutil.ReadFile(filePath)
+		loadPaths := []string{filePath}
+		if templateCommonPaths != nil {
+			loadPaths = append(loadPaths, templateCommonPaths...)
+		}
+		tmpl, err = template.ParseFiles(loadPaths...)
 		if err != nil {
 			if os.IsNotExist(err) {
 				templateSet[filename] = nil
-				return nil, errutil.ErrUnimplemented
+				return nil, errutil.ErrNotFound
 			}
-			return nil, fmt.Errorf("read template failed: %w", err)
+			return nil, fmt.Errorf("template parse file failed. [err=%s]", err.Error())
 		}
-
-		tmpl, err = template.New(filename).Parse(string(bs))
-		if err != nil {
-			return nil, err
-		}
-
 		templateSet[filename] = tmpl
 	}
 

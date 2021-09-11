@@ -8,19 +8,10 @@
     <link rel="stylesheet" type="text/css" href="/resources/css/common.css">
     <script type="text/javascript" src="/resources/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="/resources/js/index.js"></script>
-    <title>Mingo's Blog - Leave message</title>
+    <title>Mingo's Blog - Leave Message</title>
 </head>
 <body>
-<header>
-    <a href="#" class="logo">Mingo's Blog</a>
-    <ul class="navigation">
-        <li><a href="/index">首页</a></li>
-        <li><a href="/article">归档</a></li>
-        <li><a href="/leave">留言板</a></li>
-        <li><a href="/about">关于我</a></li>
-        <li><a href="https://github.com/mingolm" target="_blank">Github</a></li>
-    </ul>
-</header>
+{{template "header" .}}
 <div id="container">
     <div id="leave-content">
         <div class="tap-banner">
@@ -43,17 +34,34 @@
             </div>
             <div class="leave-rows">
                 <div class="leave-row">
-                    <div class="leave-avatar"><svg t="1626516407867" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1724" width="200" height="200"><path d="M819.2 729.088V757.76c0 33.792-27.648 61.44-61.44 61.44H266.24c-33.792 0-61.44-27.648-61.44-61.44v-28.672c0-74.752 87.04-119.808 168.96-155.648 3.072-1.024 5.12-2.048 8.192-4.096 6.144-3.072 13.312-3.072 19.456 1.024C434.176 591.872 472.064 604.16 512 604.16c39.936 0 77.824-12.288 110.592-32.768 6.144-4.096 13.312-4.096 19.456-1.024 3.072 1.024 5.12 2.048 8.192 4.096 81.92 34.816 168.96 79.872 168.96 154.624z" p-id="1725" fill="#8a8a8a"></path><path d="M359.424 373.76a168.96 152.576 90 1 0 305.152 0 168.96 152.576 90 1 0-305.152 0Z" p-id="1726" fill="#8a8a8a"></path></svg></div>
+                    <div class="leave-avatar">
+                        <svg t="1626516407867" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                             xmlns="http://www.w3.org/2000/svg" p-id="1724" width="200" height="200">
+                            <path d="M819.2 729.088V757.76c0 33.792-27.648 61.44-61.44 61.44H266.24c-33.792 0-61.44-27.648-61.44-61.44v-28.672c0-74.752 87.04-119.808 168.96-155.648 3.072-1.024 5.12-2.048 8.192-4.096 6.144-3.072 13.312-3.072 19.456 1.024C434.176 591.872 472.064 604.16 512 604.16c39.936 0 77.824-12.288 110.592-32.768 6.144-4.096 13.312-4.096 19.456-1.024 3.072 1.024 5.12 2.048 8.192 4.096 81.92 34.816 168.96 79.872 168.96 154.624z"
+                                  p-id="1725" fill="#8a8a8a"></path>
+                            <path d="M359.424 373.76a168.96 152.576 90 1 0 305.152 0 168.96 152.576 90 1 0-305.152 0Z"
+                                  p-id="1726" fill="#8a8a8a"></path>
+                        </svg>
+                    </div>
                     <div class="leave-detail">
                         <p class="leave-detail-info">
                             <span class="leave-detail-info-sender">lin*****@gmail.com</span>
                             <span class="leave-detail-info-created-at">2021-09-12 12:34:11</span>
                         </p>
-                        <p class="leave-detail-content">你好，博客做的不错，你好，博客做的不错，希望认识你好，博客做的不错，希望认识你好，博客做的不错，希望认识你好，博客做的不错，希望认识你好，博客做的不错，希望认识希望认识一下！</p>
+                        <p class="leave-detail-content">
+                            你好，博客做的不错，你好，博客做的不错，希望认识你好，博客做的不错，希望认识你好，博客做的不错，希望认识你好，博客做的不错，希望认识你好，博客做的不错，希望认识希望认识一下！</p>
                     </div>
                 </div>
                 <div class="leave-row">
-                    <div class="leave-avatar"><svg t="1626516407867" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1724" width="200" height="200"><path d="M819.2 729.088V757.76c0 33.792-27.648 61.44-61.44 61.44H266.24c-33.792 0-61.44-27.648-61.44-61.44v-28.672c0-74.752 87.04-119.808 168.96-155.648 3.072-1.024 5.12-2.048 8.192-4.096 6.144-3.072 13.312-3.072 19.456 1.024C434.176 591.872 472.064 604.16 512 604.16c39.936 0 77.824-12.288 110.592-32.768 6.144-4.096 13.312-4.096 19.456-1.024 3.072 1.024 5.12 2.048 8.192 4.096 81.92 34.816 168.96 79.872 168.96 154.624z" p-id="1725" fill="#8a8a8a"></path><path d="M359.424 373.76a168.96 152.576 90 1 0 305.152 0 168.96 152.576 90 1 0-305.152 0Z" p-id="1726" fill="#8a8a8a"></path></svg></div>
+                    <div class="leave-avatar">
+                        <svg t="1626516407867" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                             xmlns="http://www.w3.org/2000/svg" p-id="1724" width="200" height="200">
+                            <path d="M819.2 729.088V757.76c0 33.792-27.648 61.44-61.44 61.44H266.24c-33.792 0-61.44-27.648-61.44-61.44v-28.672c0-74.752 87.04-119.808 168.96-155.648 3.072-1.024 5.12-2.048 8.192-4.096 6.144-3.072 13.312-3.072 19.456 1.024C434.176 591.872 472.064 604.16 512 604.16c39.936 0 77.824-12.288 110.592-32.768 6.144-4.096 13.312-4.096 19.456-1.024 3.072 1.024 5.12 2.048 8.192 4.096 81.92 34.816 168.96 79.872 168.96 154.624z"
+                                  p-id="1725" fill="#8a8a8a"></path>
+                            <path d="M359.424 373.76a168.96 152.576 90 1 0 305.152 0 168.96 152.576 90 1 0-305.152 0Z"
+                                  p-id="1726" fill="#8a8a8a"></path>
+                        </svg>
+                    </div>
                     <div class="leave-detail">
                         <p class="leave-detail-info">
                             <span class="leave-detail-info-sender">lin*****@gmail.com</span>
@@ -63,7 +71,15 @@
                     </div>
                 </div>
                 <div class="leave-row">
-                    <div class="leave-avatar"><svg t="1626516407867" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1724" width="200" height="200"><path d="M819.2 729.088V757.76c0 33.792-27.648 61.44-61.44 61.44H266.24c-33.792 0-61.44-27.648-61.44-61.44v-28.672c0-74.752 87.04-119.808 168.96-155.648 3.072-1.024 5.12-2.048 8.192-4.096 6.144-3.072 13.312-3.072 19.456 1.024C434.176 591.872 472.064 604.16 512 604.16c39.936 0 77.824-12.288 110.592-32.768 6.144-4.096 13.312-4.096 19.456-1.024 3.072 1.024 5.12 2.048 8.192 4.096 81.92 34.816 168.96 79.872 168.96 154.624z" p-id="1725" fill="#8a8a8a"></path><path d="M359.424 373.76a168.96 152.576 90 1 0 305.152 0 168.96 152.576 90 1 0-305.152 0Z" p-id="1726" fill="#8a8a8a"></path></svg></div>
+                    <div class="leave-avatar">
+                        <svg t="1626516407867" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                             xmlns="http://www.w3.org/2000/svg" p-id="1724" width="200" height="200">
+                            <path d="M819.2 729.088V757.76c0 33.792-27.648 61.44-61.44 61.44H266.24c-33.792 0-61.44-27.648-61.44-61.44v-28.672c0-74.752 87.04-119.808 168.96-155.648 3.072-1.024 5.12-2.048 8.192-4.096 6.144-3.072 13.312-3.072 19.456 1.024C434.176 591.872 472.064 604.16 512 604.16c39.936 0 77.824-12.288 110.592-32.768 6.144-4.096 13.312-4.096 19.456-1.024 3.072 1.024 5.12 2.048 8.192 4.096 81.92 34.816 168.96 79.872 168.96 154.624z"
+                                  p-id="1725" fill="#8a8a8a"></path>
+                            <path d="M359.424 373.76a168.96 152.576 90 1 0 305.152 0 168.96 152.576 90 1 0-305.152 0Z"
+                                  p-id="1726" fill="#8a8a8a"></path>
+                        </svg>
+                    </div>
                     <div class="leave-detail">
                         <p class="leave-detail-info">
                             <span class="leave-detail-info-sender">lin*****@gmail.com</span>
@@ -75,15 +91,7 @@
             </div>
         </div>
     </div>
-    <div id="footer">
-        <div class="copyright">
-            <p>
-                <span>Copyright©2021 ｜ </span>
-                <span>Mingo's Blog ｜ </span>
-                <span>闽ICP备15016281号-3</span>
-            </p>
-        </div>
-    </div>
 </div>
+{{template "footer" .}}
 </body>
 </html>

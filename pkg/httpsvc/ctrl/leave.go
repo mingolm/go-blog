@@ -58,6 +58,6 @@ func (s *Leave) leave(req *http.Request) (resp response.Response, err error) {
 		Pages *pagingutil.Paging `json:"pages"`
 	}{
 		Rows:  rows,
-		Pages: pagingutil.Paginator(currentPage, s.limit, total),
+		Pages: pagingutil.Paginator(currentPage, s.limit, int(total)),
 	}), nil
 }

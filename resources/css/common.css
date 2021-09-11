@@ -22,47 +22,6 @@ a {
     text-decoration: none;
 }
 
-header {
-    left: 0;
-    top: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 100px;
-    z-index: 10;
-    background: #fff;
-}
-
-header .logo {
-    position: relative;
-    font-size: 1.5em;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-header .navigation {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 10px 0;
-}
-
-header .navigation li {
-    list-style: none;
-    margin: 0 20px;
-}
-
-header .navigation li a {
-    text-decoration: none;
-    font-weight: 600;
-    letter-spacing: 1px;
-}
-
-header .navigation li a:hover {
-    color: #c05b4d;
-}
-
 #container {
     padding: 3em 0 1px;
 }
@@ -273,12 +232,6 @@ header .navigation li a:hover {
 .leave-rows .leave-detail-content {
     font-size: 14px;
     color: #666666;
-}
-
-#footer {
-    text-align: center;
-    font-size: 13px;
-    margin: 15px 0;
 }
 
 /*屏幕宽度小于991px,改变布局和样式*/

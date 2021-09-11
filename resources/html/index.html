@@ -8,19 +8,10 @@
     <link rel="stylesheet" type="text/css" href="/resources/css/common.css">
     <script type="text/javascript" src="/resources/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="/resources/js/index.js"></script>
-    <title>Mingo's Blog - Home page</title>
+    <title>Mingo's Blog - Home Page</title>
 </head>
 <body>
-<header>
-    <a href="#" class="logo">Mingo's Blog</a>
-    <ul class="navigation">
-        <li><a href="/index">首页</a></li>
-        <li><a href="/article">归档</a></li>
-        <li><a href="/leave">留言板</a></li>
-        <li><a href="/about">关于我</a></li>
-        <li><a href="https://github.com/mingolm" target="_blank">Github</a></li>
-    </ul>
-</header>
+{{template "header" .}}
 <div id="container">
     <div id="content">
         <section class="posts">
@@ -65,6 +56,9 @@
         <ul class="pagination">
             <li><a href="?page={{.Pages.PrevPage}}">上一页</a></li>
             {{$currPage := .Pages.CurrPage}}
+            {{if eq .Pages.Total 0}}
+            <li><a class="page-link page-active" href="?page=1">1</a></li>
+            {{end}}
             {{range $v := .Pages.Pages}}
             {{if eq $v $currPage}}
             <li><a class="page-link page-active" href="?page={{$v}}">{{$v}}</a></li>
@@ -75,15 +69,7 @@
             <li><a href="?page={{.Pages.NextPage}}">下一页</a></li>
         </ul>
     </div>
-    <div id="footer">
-        <div class="copyright">
-            <p>
-                <span>Copyright©2021 ｜ </span>
-                <span>Mingo's Blog ｜ </span>
-                <span>闽ICP备15016281号-3</span>
-            </p>
-        </div>
-    </div>
 </div>
+{{template "footer" .}}
 </body>
 </html>

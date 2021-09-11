@@ -10,28 +10,29 @@ type Paging struct {
 	CurrPage int   `json:"curr_page"`
 }
 
-func Paginator(page, pageLimit int, nums uint64) *Paging {
-	var PrevPage int                                            //前一页地址
-	var NextPage int                                            //后一页地址
-	Total := int(math.Ceil(float64(nums) / float64(pageLimit))) //page总数
-	if page > Total {
-		page = Total
+func Paginator(page, pageLimit, total int) *Paging {
+	var (
+		prev      int // 前一页地址
+		next      int // 后一页地址
+		pageTotal int // 总页数
+	)
+	pageTotal = int(math.Ceil(float64(total) / float64(pageLimit)))
+	page = int(math.Max(float64(1), float64(pageTotal)))
+	prev = int(math.Max(float64(1), float64(page-1)))
+	next = page + 1
+	if pageTotal == 0 {
+		next = 1
 	}
-	if page <= 0 {
-		page = 1
-	}
-	pages := make([]int, Total)
+	pages := make([]int, total)
 	for i := range pages {
 		pages[i] = i + 1
 	}
-	PrevPage = int(math.Max(float64(1), float64(page-1)))
-	NextPage = page + 1
 
 	return &Paging{
 		Pages:    pages,
-		Total:    Total,
-		PrevPage: PrevPage,
-		NextPage: NextPage,
+		Total:    total,
+		PrevPage: prev,
+		NextPage: next,
 		CurrPage: page,
 	}
 }

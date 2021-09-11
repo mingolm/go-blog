@@ -43,12 +43,12 @@ func (s *Index) Middlewares() []middleware.Middleware {
 func (s *Index) index(req *http.Request) (resp response.Response, err error) {
 	currentPage, _ := strconv.Atoi(req.FormValue("page"))
 	offset := currentPage * s.Limit
-	rows, err := s.ArticleRepo.GetList(req.Context(), offset, s.Limit)
+	rows, err := s.ArticleRepo.GetList(req.Context(), int(offset), int(s.Limit))
 	if err != nil {
 		return nil, err
 	}
 
-	totalOutput, err := s.articleCache.GetTotals(req.Context())
+	total, err := s.articleCache.GetTotal(req.Context())
 	if err != nil {
 		return nil, err
 	}
@@ -58,6 +58,6 @@ func (s *Index) index(req *http.Request) (resp response.Response, err error) {
 		Pages *pagingutil.Paging `json:"pages"`
 	}{
 		Rows:  rows,
-		Pages: pagingutil.Paginator(currentPage, s.Limit, totalOutput.TotalNormal),
+		Pages: pagingutil.Paginator(currentPage, s.Limit, int(total)),
 	}), nil
 }
